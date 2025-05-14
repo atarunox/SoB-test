@@ -32,14 +32,14 @@ function renderGearTab() {
     if (item) {
       const unequip = document.createElement('button');
       unequip.textContent = "Unequip";
-      unequip.onclick = (() => () => {
-        console.log(`Unequipping: ${slot}`, equipped[slot]);
+      unequip.onclick = (() => {
+    console.log('Before Unequip:', { inventory, equipped });
     inventory.push(equipped[slot]);
-  inventory.push(equipped[slot]);
-  delete equipped[slot];
-  applyGearEffects();
-  updateUI();
-})(slot);
+    delete equipped[slot];
+    console.log('After Unequip:', { inventory, equipped });
+    applyGearEffects();
+    updateUI();
+});
 
       div.appendChild(unequip);
     }
@@ -64,15 +64,17 @@ function renderGearTab() {
 }
 
 function applyGearEffects() {
-  hero.stats = { ...hero.baseStats };
-  Object.values(equipped).forEach(item => {
-    for (const [stat, value] of Object.entries(item.effects)) {
-      if (hero.stats[stat] !== undefined) {
-        hero.stats[stat] += value;
-      }
-    }
-  });
-  updateUI();
+    hero.stats = { ...hero.baseStats };
+    console.log('Base Stats:', hero.baseStats);
+    Object.values(equipped).forEach(item => {
+        for (const [stat, value] of Object.entries(item.effects)) {
+            if (hero.stats[stat] !== undefined) {
+                hero.stats[stat] += value;
+            }
+        }
+    });
+    console.log('Updated Stats:', hero.stats);
+    updateUI();
 }
 
 window.updateStat = function(stat, value) {
