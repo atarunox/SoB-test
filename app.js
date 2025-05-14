@@ -1,11 +1,13 @@
 import { heroes } from './heroes.js';
-import { gearList } from './gear.js';
 
 let hero = {};
 let heroName = "Outlaw Joe";
-let inventory = [...gearList];
-let equipped = {};
-let allSlots = ["Head", "Torso", "Feet"];
+
+let conditions = {
+  Mutations: [],
+  Injuries: [],
+  Madness: []
+};
 
 function showTab(id) {
   document.querySelectorAll('.tabContent').forEach(tab => tab.style.display = 'none');
@@ -22,69 +24,41 @@ function renderStatsTab() {
   }
 }
 
-function renderGearTab() {
-  const tab = document.getElementById('gearTab');
-  tab.innerHTML = '<h3>Equipment</h3>';
+function renderConditionsTab() {
+  const tab = document.getElementById('conditionsTab');
+  tab.innerHTML = '';
 
-  const slotContainer = document.createElement("div");
-  slotContainer.id = "slotContainer";
+  Object.entries(conditions).forEach(([type, list]) => {
+    const section = document.createElement('div');
+    section.innerHTML = `<h3 style="color: ${type === 'Mutations' ? 'green' : type === 'Injuries' ? 'red' : 'blue'}">${type}</h3>`;
 
-  allSlots.forEach(slot => {
-    slotContainer.appendChild(createGearSlotElement(slot));
-  });
+    list.forEach((cond, index) => {
+      const entry = document.createElement('div');
+      entry.textContent = cond;
+      entry.style.marginLeft = "1em";
+      const remove = document.createElement('button');
+      remove.textContent = "Remove";
+      remove.onclick = () => {
+        list.splice(index, 1);
+        renderConditionsTab();
+      };
+      entry.appendChild(remove);
+      section.appendChild(entry);
+    });
 
-  tab.appendChild(slotContainer);
-
-  const addBtn = document.createElement("button");
-  addBtn.textContent = "+ Add Extra Slot";
-  addBtn.onclick = () => {
-    const newSlot = prompt("Enter name for extra slot:", "Extra Slot");
-    if (newSlot) {
-      allSlots.push(newSlot);
-      const container = document.getElementById("slotContainer");
-      container.appendChild(createGearSlotElement(newSlot));
-    }
-  };
-  tab.appendChild(addBtn);
-}
-
-function createGearSlotElement(slot) {
-  const div = document.createElement("div");
-  const label = document.createElement("label");
-  label.textContent = slot + ": ";
-  const selector = document.createElement("select");
-  selector.innerHTML = `<option value="">None</option>`;
-  gearList.filter(item => item.slot === slot).forEach(item => {
-    const opt = document.createElement("option");
-    opt.value = item.id;
-    opt.textContent = item.name;
-    if (equipped[slot]?.id === item.id) opt.selected = true;
-    selector.appendChild(opt);
-  });
-  selector.addEventListener("change", () => {
-    if (selector.value === "") {
-      delete equipped[slot];
-    } else {
-      const selectedItem = gearList.find(g => g.id === selector.value);
-      equipped[slot] = selectedItem;
-    }
-    applyGearEffects();
-  });
-  div.appendChild(label);
-  div.appendChild(selector);
-  return div;
-}
-
-function applyGearEffects() {
-  hero.stats = { ...hero.baseStats };
-  Object.values(equipped).forEach(item => {
-    for (const [stat, value] of Object.entries(item.effects)) {
-      if (hero.stats[stat] !== undefined) {
-        hero.stats[stat] += value;
+    const add = document.createElement('button');
+    add.textContent = `+ Add ${type}`;
+    add.onclick = () => {
+      const result = prompt(`Enter ${type} condition name:`);
+      if (result) {
+        list.push(result);
+        renderConditionsTab();
       }
-    }
+    };
+
+    section.appendChild(add);
+    tab.appendChild(section);
   });
-  updateUI();
 }
 
 window.updateStat = function(stat, value) {
@@ -111,7 +85,7 @@ window.updateHeroName = function(value) {
 
 function updateUI() {
   renderStatsTab();
-  renderGearTab();
+  renderConditionsTab();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
