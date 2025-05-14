@@ -36,6 +36,7 @@ function renderGearTab() {
         inventory.push(item);
         delete equipped[slot];
         applyGearEffects();
+        updateUI();
       };
       div.appendChild(unequip);
     }
