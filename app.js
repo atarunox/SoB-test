@@ -1,7 +1,10 @@
 import { heroes } from './heroes.js';
+import { hexcrawlConditions } from './conditions.js';
 
 let hero = {};
 let heroName = "Outlaw Joe";
+
+let useHexcrawl = true;
 
 let conditions = {
   Mutations: [],
@@ -28,6 +31,14 @@ function renderConditionsTab() {
   const tab = document.getElementById('conditionsTab');
   tab.innerHTML = '';
 
+  const toggle = document.createElement("label");
+  toggle.innerHTML = `<input type="checkbox" ${useHexcrawl ? "checked" : ""}> Use Hexcrawl Chart`;
+  toggle.querySelector("input").onchange = () => {
+    useHexcrawl = toggle.querySelector("input").checked;
+    renderConditionsTab();
+  };
+  tab.appendChild(toggle);
+
   Object.entries(conditions).forEach(([type, list]) => {
     const section = document.createElement('div');
     section.innerHTML = `<h3 style="color: ${type === 'Mutations' ? 'green' : type === 'Injuries' ? 'red' : 'blue'}">${type}</h3>`;
@@ -46,17 +57,32 @@ function renderConditionsTab() {
       section.appendChild(entry);
     });
 
-    const add = document.createElement('button');
-    add.textContent = `+ Add ${type}`;
-    add.onclick = () => {
-      const result = prompt(`Enter ${type} condition name:`);
-      if (result) {
-        list.push(result);
+    const dropdown = document.createElement('select');
+    dropdown.innerHTML = '<option value="">-- Choose --</option>';
+    (hexcrawlConditions[type] || []).forEach(entry => {
+      const opt = document.createElement('option');
+      opt.value = entry;
+      opt.textContent = entry;
+      dropdown.appendChild(opt);
+    });
+    dropdown.onchange = () => {
+      if (dropdown.value) {
+        list.push(dropdown.value);
         renderConditionsTab();
       }
     };
+    section.appendChild(dropdown);
 
-    section.appendChild(add);
+    const roll = document.createElement('button');
+    roll.textContent = "Roll";
+    roll.onclick = () => {
+      const roll = (Math.floor(Math.random() * 6) + 1) * 10 + Math.floor(Math.random() * 6) + 1;
+      const result = hexcrawlConditions[type].find(e => e.includes(roll.toString())) || `Rolled ${roll}: Unknown`;
+      list.push(result);
+      renderConditionsTab();
+    };
+    section.appendChild(roll);
+
     tab.appendChild(section);
   });
 }
