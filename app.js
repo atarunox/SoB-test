@@ -5,6 +5,7 @@ let hero = {};
 let heroName = "Outlaw Joe";
 let inventory = [...gearList];
 let equipped = {};
+let allSlots = ["Head", "Torso", "Feet"];
 
 function showTab(id) {
   document.querySelectorAll('.tabContent').forEach(tab => tab.style.display = 'none');
@@ -24,33 +25,54 @@ function renderStatsTab() {
 function renderGearTab() {
   const tab = document.getElementById('gearTab');
   tab.innerHTML = '<h3>Equipment</h3>';
-  const slots = ["Head", "Torso", "Feet"];
-  slots.forEach(slot => {
-    const selector = document.createElement("select");
-    const label = document.createElement("label");
-    label.textContent = slot + ": ";
-    selector.innerHTML = `<option value="">None</option>`;
-    gearList.filter(item => item.slot === slot).forEach(item => {
-      const opt = document.createElement("option");
-      opt.value = item.id;
-      opt.textContent = item.name;
-      if (equipped[slot]?.id === item.id) opt.selected = true;
-      selector.appendChild(opt);
-    });
-    selector.addEventListener("change", () => {
-      if (selector.value === "") {
-        delete equipped[slot];
-      } else {
-        const selectedItem = gearList.find(g => g.id === selector.value);
-        equipped[slot] = selectedItem;
-      }
-      applyGearEffects();
-    });
-    const div = document.createElement("div");
-    div.appendChild(label);
-    div.appendChild(selector);
-    tab.appendChild(div);
+
+  const slotContainer = document.createElement("div");
+  slotContainer.id = "slotContainer";
+
+  allSlots.forEach(slot => {
+    slotContainer.appendChild(createGearSlotElement(slot));
   });
+
+  tab.appendChild(slotContainer);
+
+  const addBtn = document.createElement("button");
+  addBtn.textContent = "+ Add Extra Slot";
+  addBtn.onclick = () => {
+    const newSlot = prompt("Enter name for extra slot:", "Extra Slot");
+    if (newSlot) {
+      allSlots.push(newSlot);
+      const container = document.getElementById("slotContainer");
+      container.appendChild(createGearSlotElement(newSlot));
+    }
+  };
+  tab.appendChild(addBtn);
+}
+
+function createGearSlotElement(slot) {
+  const div = document.createElement("div");
+  const label = document.createElement("label");
+  label.textContent = slot + ": ";
+  const selector = document.createElement("select");
+  selector.innerHTML = `<option value="">None</option>`;
+  gearList.filter(item => item.slot === slot).forEach(item => {
+    const opt = document.createElement("option");
+    opt.value = item.id;
+    opt.textContent = item.name;
+    if (equipped[slot]?.id === item.id) opt.selected = true;
+    selector.appendChild(opt);
+  });
+  selector.addEventListener("change", () => {
+    if (selector.value === "") {
+      delete equipped[slot];
+    } else {
+      const selectedItem = gearList.find(g => g.id === selector.value);
+      equipped[slot] = selectedItem;
+    }
+    applyGearEffects();
+  });
+  div.appendChild(label);
+  div.appendChild(selector);
+  return div;
 }
 
 function applyGearEffects() {
