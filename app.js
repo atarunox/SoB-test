@@ -1,104 +1,55 @@
-import { heroes } from './heroes.js';
 
-let hero = {};
-let heroName = "Outlaw Joe";
+import { gearList } from './gear.js';
 
-function showTab(id) {
-  document.querySelectorAll('.tabContent').forEach(tab => tab.style.display = 'none');
-  const target = document.getElementById(id);
-  if (target) target.style.display = 'block';
-}
+let inventory = [...gearList];
+let equipped = {};
 
-function updateUI() {
-  const s = hero.stats;
-  const statsTab = document.getElementById('statsTab');
-  statsTab.innerHTML = `<h2>${hero.customName}</h2>`;
-  for (let stat in s) {
-    statsTab.innerHTML += `<label>${stat}: <input type="number" value="${s[stat]}" onchange="updateStat('${stat}', this.value)" /></label><br/>`;
-  }
-}
-
-window.updateStat = function(stat, value) {
-  hero.stats[stat] = parseInt(value);
-  updateUI();
-};
-
-window.initHero = function(className) {
-  const data = heroes[className];
-  hero = {
-    name: className,
-    customName: heroName,
-    stats: { ...data.stats }
-  };
-  updateUI();
-};
-
-window.updateHeroName = function(value) {
-  heroName = value;
-  hero.customName = value;
-  updateUI();
-};
-
-document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".tabs button").forEach(btn => {
-    btn.addEventListener("click", () => showTab(btn.dataset.tab));
+function renderGearTab() {
+  const tab = document.getElementById('gearTab');
+  tab.innerHTML = '<h3>Equipment Slots</h3>';
+  const slots = ["Head", "Torso", "Hands", "Feet", "Face", "Shoulders", "Coat", "Pants", "Gloves"];
+  slots.forEach(slot => {
+    const div = document.createElement('div');
+    const item = equipped[slot];
+    div.innerHTML = `<strong>${slot}:</strong> ${item ? item.name : 'Empty'}`;
+    if (item) {
+      const unequip = document.createElement('button');
+      unequip.textContent = "Unequip";
+      unequip.onclick = () => {
+        inventory.push(item);
+        delete equipped[slot];
+        applyGearEffects();
+      };
+      div.appendChild(unequip);
+    }
+    tab.appendChild(div);
   });
-  document.getElementById("heroSelect").addEventListener("change", e => initHero(e.target.value));
-  document.getElementById("heroName").addEventListener("change", e => updateHeroName(e.target.value));
-  initHero("Bandido");
-  showTab("statsTab");
-});
 
+  tab.innerHTML += '<h3>Inventory</h3>';
+  inventory.forEach((item, index) => {
+    const div = document.createElement('div');
+    div.innerHTML = `<strong>${item.name}</strong> (${item.slot})`;
+    const btn = document.createElement('button');
+    btn.textContent = "Equip";
+    btn.onclick = () => {
+      if (equipped[item.slot]) inventory.push(equipped[item.slot]);
+      equipped[item.slot] = item;
+      inventory.splice(index, 1);
+      applyGearEffects();
+    };
+    div.appendChild(btn);
+    tab.appendChild(div);
+  });
+}
 
-import { keywords } from './keywords.js';
-
-function renderLibraryTab() {
-  const tab = document.getElementById('libraryTab');
-  tab.innerHTML = '<h3>Keyword Library</h3>';
-  const input = document.createElement('input');
-  input.placeholder = "Search...";
-  const resultsDiv = document.createElement('div');
-  tab.appendChild(input);
-  tab.appendChild(resultsDiv);
-
-  const displayResults = (list) => {
-    resultsDiv.innerHTML = '';
-    let currentCategory = null;
-    list.forEach(k => {
-      if (k.keyword === "Category") {
-        currentCategory = document.createElement('details');
-        const summary = document.createElement('summary');
-        summary.textContent = k.description;
-        currentCategory.appendChild(summary);
-        resultsDiv.appendChild(currentCategory);
-      } else if (currentCategory) {
-        const div = document.createElement('div');
-        div.innerHTML = '<strong>' + k.keyword + '</strong>: ' + k.description;
-        div.style.marginLeft = '1em';
-        currentCategory.appendChild(div);
+function applyGearEffects() {
+  hero.stats = { ...hero.baseStats };
+  Object.values(equipped).forEach(item => {
+    for (const [stat, value] of Object.entries(item.effects)) {
+      if (hero.stats[stat] !== undefined) {
+        hero.stats[stat] += value;
       }
-    });
-  };
-
-  input.addEventListener('input', () => {
-    const val = input.value.toLowerCase();
-    const filtered = keywords.filter(k =>
-      k.keyword !== "Category" && (
-        k.keyword.toLowerCase().includes(val) ||
-        k.description.toLowerCase().includes(val)
-      )
-    );
-    resultsDiv.innerHTML = '';
-    filtered.forEach(k => {
-      const div = document.createElement('div');
-      div.innerHTML = '<strong>' + k.keyword + '</strong>: ' + k.description;
-      resultsDiv.appendChild(div);
-    });
+    }
   });
-
-  displayResults(keywords);
+  updateUI();
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  renderLibraryTab();
-});
