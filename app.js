@@ -32,12 +32,13 @@ function renderGearTab() {
     if (item) {
       const unequip = document.createElement('button');
       unequip.textContent = "Unequip";
-      unequip.onclick = () => {
-        inventory.push(equipped[slot]);
-        delete equipped[slot];
-        applyGearEffects();
-        updateUI();
-      };
+      unequip.onclick = ((slotName) => () => {
+  inventory.push(equipped[slotName]);
+  delete equipped[slotName];
+  applyGearEffects();
+  updateUI();
+})(slot);
+
       div.appendChild(unequip);
     }
     tab.appendChild(div);
