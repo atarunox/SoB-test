@@ -26,36 +26,29 @@ function renderGearTab() {
   tab.innerHTML = '<h3>Equipment</h3>';
   const slots = ["Head", "Torso", "Feet"];
   slots.forEach(slot => {
-    const div = document.createElement('div');
-    const item = equipped[slot];
-    div.innerHTML = `<strong>${slot}:</strong> ${item ? item.name : 'Empty'}`;
-    if (item) {
-      const unequip = document.createElement('button');
-      unequip.textContent = "Unequip";
-      unequip.onclick = ((slotName) => () => {
-        inventory.push(equipped[slotName]);
-        delete equipped[slotName];
-        applyGearEffects();
-        updateUI();
-      })(slot);
-      div.appendChild(unequip);
-    }
-    tab.appendChild(div);
-  });
-
-  tab.innerHTML += '<h3>Inventory</h3>';
-  inventory.forEach((item, index) => {
-    const div = document.createElement('div');
-    div.innerHTML = `<strong>${item.name}</strong> (${item.slot})`;
-    const btn = document.createElement('button');
-    btn.textContent = "Equip";
-    btn.onclick = () => {
-      if (equipped[item.slot]) inventory.push(equipped[item.slot]);
-      equipped[item.slot] = item;
-      inventory.splice(index, 1);
+    const selector = document.createElement("select");
+    const label = document.createElement("label");
+    label.textContent = slot + ": ";
+    selector.innerHTML = `<option value="">None</option>`;
+    gearList.filter(item => item.slot === slot).forEach(item => {
+      const opt = document.createElement("option");
+      opt.value = item.id;
+      opt.textContent = item.name;
+      if (equipped[slot]?.id === item.id) opt.selected = true;
+      selector.appendChild(opt);
+    });
+    selector.addEventListener("change", () => {
+      if (selector.value === "") {
+        delete equipped[slot];
+      } else {
+        const selectedItem = gearList.find(g => g.id === selector.value);
+        equipped[slot] = selectedItem;
+      }
       applyGearEffects();
-    };
-    div.appendChild(btn);
+    });
+    const div = document.createElement("div");
+    div.appendChild(label);
+    div.appendChild(selector);
     tab.appendChild(div);
   });
 }
