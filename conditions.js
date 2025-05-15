@@ -1,1 +1,18 @@
-export const hexcrawlConditions = {"Mutations": ["Mutation 11", "Mutation 12", "Mutation 13", "Mutation 14", "Mutation 15", "Mutation 16", "Mutation 17", "Mutation 18", "Mutation 19", "Mutation 20", "Mutation 21", "Mutation 22", "Mutation 23", "Mutation 24", "Mutation 25", "Mutation 26", "Mutation 27", "Mutation 28", "Mutation 29", "Mutation 30", "Mutation 31", "Mutation 32", "Mutation 33", "Mutation 34", "Mutation 35", "Mutation 36", "Mutation 37", "Mutation 38", "Mutation 39", "Mutation 40", "Mutation 41", "Mutation 42", "Mutation 43", "Mutation 44", "Mutation 45", "Mutation 46", "Mutation 47", "Mutation 48", "Mutation 49", "Mutation 50", "Mutation 51", "Mutation 52", "Mutation 53", "Mutation 54", "Mutation 55", "Mutation 56", "Mutation 57", "Mutation 58", "Mutation 59", "Mutation 60", "Mutation 61", "Mutation 62", "Mutation 63", "Mutation 64", "Mutation 65", "Mutation 66"], "Injuries": ["Injury 11", "Injury 12", "Injury 13", "Injury 14", "Injury 15", "Injury 16", "Injury 17", "Injury 18", "Injury 19", "Injury 20", "Injury 21", "Injury 22", "Injury 23", "Injury 24", "Injury 25", "Injury 26", "Injury 27", "Injury 28", "Injury 29", "Injury 30", "Injury 31", "Injury 32", "Injury 33", "Injury 34", "Injury 35", "Injury 36", "Injury 37", "Injury 38", "Injury 39", "Injury 40", "Injury 41", "Injury 42", "Injury 43", "Injury 44", "Injury 45", "Injury 46", "Injury 47", "Injury 48", "Injury 49", "Injury 50", "Injury 51", "Injury 52", "Injury 53", "Injury 54", "Injury 55", "Injury 56", "Injury 57", "Injury 58", "Injury 59", "Injury 60", "Injury 61", "Injury 62", "Injury 63", "Injury 64", "Injury 65", "Injury 66"], "Madness": ["Madness 11", "Madness 12", "Madness 13", "Madness 14", "Madness 15", "Madness 16", "Madness 17", "Madness 18", "Madness 19", "Madness 20", "Madness 21", "Madness 22", "Madness 23", "Madness 24", "Madness 25", "Madness 26", "Madness 27", "Madness 28", "Madness 29", "Madness 30", "Madness 31", "Madness 32", "Madness 33", "Madness 34", "Madness 35", "Madness 36", "Madness 37", "Madness 38", "Madness 39", "Madness 40", "Madness 41", "Madness 42", "Madness 43", "Madness 44", "Madness 45", "Madness 46", "Madness 47", "Madness 48", "Madness 49", "Madness 50", "Madness 51", "Madness 52", "Madness 53", "Madness 54", "Madness 55", "Madness 56", "Madness 57", "Madness 58", "Madness 59", "Madness 60", "Madness 61", "Madness 62", "Madness 63", "Madness 64", "Madness 65", "Madness 66"]};
+export const hexcrawlConditions = {
+  Mutations: [
+    "11 – Glowing Skin: Emits faint light. Cannot sneak.",
+    "12 – Chitinous Shell: +1 Defense, -1 Agility.",
+    "13 – Extra Eye: +1 Lore. Appearance is disturbing.",
+    "... (add the rest here up to 66)"
+  ],
+  Injuries: [
+    "11 – Cracked Ribs: -1 Health.",
+    "12 – Dislocated Shoulder: -1 Strength.",
+    "... (rest of injuries)"
+  ],
+  Madness: [
+    "11 – Uncontrollable Laughter: -1 Cunning.",
+    "12 – Fear of the Dark: -1 Willpower.",
+    "... (rest of madness entries)"
+  ]
+};
